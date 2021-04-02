@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { ChangeFilter } from '../redux/actions';
 
-export default function Filter({ value, onChangeFilter }) {
+function Filter({ value, onChange }) {
   return (
     <div className="Filter">
       <p className="form__title ">Find Contacts By Name</p>
-      <input
-        type="text"
-        value={value}
-        onChange={e => onChangeFilter(e.target.value)}
-      ></input>
+      <input type="text" value={value} onChange={onChange}></input>
     </div>
   );
 }
@@ -19,5 +17,15 @@ Filter.defaultProps = {
 
 Filter.propTypes = {
   value: PropTypes.string,
-  onChangeFilter: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  value: state.phonebook.filter,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onChange: event => dispatch(ChangeFilter(event.target.value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Filter);
