@@ -1,38 +1,56 @@
-import ContactListItem from './ContactListItem';
+// import ContactListItem from './ContactListItem';
+import { connect } from 'react-redux';
+import { deleteContact } from '../redux/actions';
 import PropTypes from 'prop-types';
 
-const ContactList = ({ filteredContacts, onRemove }) => {
+const ContactList = ({ items, onDelete }) => {
   return (
-    filteredContacts.length > 0 && (
+    items.length > 0 && (
       <ul className="ContactList">
-        {filteredContacts.map(({ id, name, number }) => (
-          <ContactListItem
-            key={id}
-            name={name}
-            number={number}
-            onClickRemove={() => onRemove(id)}
-          />
+        {items.map(({ id, name, number }) => (
+          <li key={id}>
+            <p>
+              {name}: {number}
+            </p>
+            <button
+              type="button"
+              className="ContactList__btn"
+              onClick={() => onDelete(id)}
+            >
+              Delete
+            </button>
+          </li>
         ))}
       </ul>
     )
   );
 };
 
-export default ContactList;
-
-ContactListItem.propTypes = {
-  name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
-  onClickRemove: PropTypes.func.isRequired,
+const getFilteredContacts = (contacts, filter) => {
+  return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase()),
+  );
 };
 
+const mapStateToProps = state => {
+  const { filter, items } = state.phonebook;
+  const filteredContacts = getFilteredContacts(items, filter);
+  return { items: filteredContacts };
+};
+
+const mapDispatchToProps = dispatch => ({
+  onDelete: id => dispatch(deleteContact(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+
+// proptypes
 ContactList.propTypes = {
   filteredContacts: PropTypes.arrayOf(
-    PropTypes.exact({
+    PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       number: PropTypes.string.isRequired,
     }),
   ),
-  onRemove: PropTypes.func.isRequired,
 };
