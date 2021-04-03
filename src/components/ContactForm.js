@@ -1,47 +1,36 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import { connect } from 'react-redux';
+import { addContact } from '../redux/actions';
+import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
-export default class ContactForm extends Component {
+class ContactForm extends Component {
   state = {
     name: '',
     number: '',
   };
 
   handleChange = e => {
-    // console.log(e);
-    this.setState({ [e.currentTarget.name]: e.currentTarget.value });
-  };
-
-  contactChek = () => {
-    const { name, number } = this.state;
-    const { contacts } = this.props;
-    const namesIsIn = contacts.find(
-      el => name.toLowerCase() === el.name.toLowerCase(),
-    );
-    const numbersIsIn = contacts.find(
-      el => name.toLowerCase() === el.name.toLowerCase(),
-    );
-
-    if (namesIsIn || numbersIsIn) {
-      alert(`${name}${number} is already in contacts`);
-    }
-
-    if (name === '' || number === '') {
-      alert('Enter all data, please');
-    }
+    const { name, value } = e.currentTarget;
+    this.setState({ [name]: value });
   };
 
   handleSubmit = e => {
-    const { name, number } = this.state;
-
     e.preventDefault();
-    this.setState({ name: '', number: '' });
-    if (this.contactChek()) {
+    const id = uuidv4();
+    const { name, number } = this.state;
+    const { onSubmit, state } = this.props;
+
+    const isName = state.phonebook.items.find(item => item.name === name);
+    const isNumber = state.phonebook.items.find(item => item.number === number);
+
+    if (isName || isNumber) {
+      alert('contact is already in list');
       return;
     }
-
-    this.props.onSubmit(name, number);
+    const newContact = { id, name, number };
+    onSubmit(newContact);
+    this.setState({ name: '', number: '' });
   };
-
   render() {
     return (
       <form className="form" onSubmit={this.handleSubmit}>
@@ -77,6 +66,17 @@ export default class ContactForm extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  state,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSubmit: contact => dispatch(addContact(contact)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
+
+// proptypes
 ContactForm.propTypes = {
   contacts: PropTypes.arrayOf(
     PropTypes.exact({
