@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { changeFilter } from '../redux/actions';
+import { changeFilter } from '../redux/contacts/actions';
 
 function Filter({ value, onChange }) {
   return (

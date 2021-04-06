@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { addContact } from '../redux/actions';
+import { addContact } from '../redux/contacts/actions';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 class ContactForm extends Component {
