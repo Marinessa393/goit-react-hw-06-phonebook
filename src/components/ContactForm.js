@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { addContact } from '../redux/actions';
+import { addContact } from '../redux/contacts/actions';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 class ContactForm extends Component {
@@ -18,10 +18,10 @@ class ContactForm extends Component {
     e.preventDefault();
     const id = uuidv4();
     const { name, number } = this.state;
-    const { onSubmit, state } = this.props;
+    const { onSubmit, items } = this.props;
 
-    const isName = state.phonebook.items.find(item => item.name === name);
-    const isNumber = state.phonebook.items.find(item => item.number === number);
+    const isName = items.find(item => item.name.toLowerCase() === name.toLocaleLowerCase());
+    const isNumber = items.find(item => item.number === number);
 
     if (isName || isNumber) {
       alert('contact is already in list');
@@ -66,8 +66,8 @@ class ContactForm extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  state,
+const mapStateToProps = ({phonebook}) => ({
+  items: phonebook.items
 });
 
 const mapDispatchToProps = dispatch => ({
