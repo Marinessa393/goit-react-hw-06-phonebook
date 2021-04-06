@@ -10,7 +10,7 @@ export const deleteContact = contactId => ({
   payload: contactId,
 });
 
-export const ChangeFilter = value => ({
+export const changeFilter = value => ({
   type: actionTypes.CHANGE_FILTER,
   payload: value,
 });
